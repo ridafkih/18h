@@ -4,9 +4,9 @@ import { Response } from "@/@types/response";
 
 import { AnySchema } from "yup";
 
-export type ParameterizedContext<RequestSchema = {}, URLParams = {}> = Context & {
+export type ParameterizedContext<RequestSchemaOutputType = {}, URLParams = {}> = Context & {
   params: URLParams;
-  body: RequestSchema;
+  request: Context["request"] & { body: RequestSchemaOutputType };
 };
 
 export type Route<RequestSchema extends AnySchema = AnySchema, ResponseBody = {}, URLParams = {}> = {
