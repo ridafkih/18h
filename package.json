@@ -1,6 +1,6 @@
 {
   "name": "@ridafkih/18h",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --declaration && tsc-alias"
@@ -19,6 +19,7 @@
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",
     "koa": "^2.13.4",
+    "koa-body": "^5.0.0",
     "koa-router": "^10.1.1",
     "yup": "^0.32.11"
   },

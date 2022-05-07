@@ -4,12 +4,19 @@ import { Response } from "@/@types/response";
 
 import { AnySchema } from "yup";
 
-export type ParameterizedContext<RequestSchemaOutputType = {}, URLParams = {}> = Context & {
+export type ParameterizedContext<
+  RequestSchemaOutputType = {},
+  URLParams = {}
+> = Context & {
   params: URLParams;
-  request: Context["request"] & { body: RequestSchemaOutputType };
+  request: Context["request"] & { body?: RequestSchemaOutputType };
 };
 
-export type Route<RequestSchema extends AnySchema = AnySchema, ResponseBody = {}, URLParams = {}> = {
+export type Route<
+  RequestSchema extends AnySchema = AnySchema,
+  ResponseBody = {},
+  URLParams = {}
+> = {
   method: HTTPMethod;
   handler: (
     context: ParameterizedContext<RequestSchema["__outputType"], URLParams>
