@@ -1,9 +1,9 @@
 import Koa from "koa";
 import Router from "koa-router";
+import bodyParser from "koa-bodyparser";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
 
 import { Route } from "@/@types/router";
-import koaBody from "koa-body";
 
 /**
  * Creates a router at the specified port & hostname, sourcing
@@ -21,7 +21,7 @@ export const createRouter = async (
   const app = new Koa();
   const router = new Router();
 
-	app.use(koaBody());
+	app.use(bodyParser());
   app.use(router.routes());
 
   const registerRoute = (path: string, { method, handler }: Route) =>
