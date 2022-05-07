@@ -8,6 +8,16 @@ export const handleRoute = (route: Route) => {
       headers = {},
     } = await route.handler(context);
 
+    const errors: string[] = await route.validation
+      ?.validate(context.request.body)
+      .catch(({ errors }) => errors);
+
+		if (errors.length) {
+			context.status = 400;
+			context.body = { errors };
+			return;
+		};
+
     for (const [key, value] of Object.entries(headers)) context.set(key, value);
     context.status = code;
     context.body = body;
