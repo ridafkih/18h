@@ -1,6 +1,6 @@
 {
   "name": "@ridafkih/18h",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --declaration && tsc-alias"

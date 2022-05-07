@@ -12,7 +12,7 @@ type DirectoryMap = string[][];
  * @returns A 2D array containing elements representing the file paths.
  */
 const mapDirectory = (origin: string, ...paths: string[]): DirectoryMap => {
-  const path = join(process.cwd(), origin, ...paths);
+  const path = join(origin, ...paths);
   const sources = readdirSync(path, { withFileTypes: true });
 
   return sources.reduce((accumulator, source) => {
@@ -47,7 +47,7 @@ const parsePathElement = (pathElement: string) => {
  * @returns A valid path string to use on a router.
  */
 const pathArrayToString = (origin: string, pathArray: string[]) => {
-  const importPath = join(process.cwd(), origin, ...pathArray);
+  const importPath = join(origin, ...pathArray);
   const getRoute = <T>() =>
     import(importPath).then(({ default: handler }) =>
       handleRoute(handler)
