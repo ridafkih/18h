@@ -48,10 +48,10 @@ const parsePathElement = (pathElement: string) => {
  */
 const pathArrayToString = (origin: string, pathArray: string[]) => {
   const importPath = join(origin, ...pathArray);
-  const getRoute = <T>() =>
+  const getRoute = () =>
     import(importPath).then(({ default: handler }) =>
       handleRoute(handler)
-    ) as Promise<Route<T>>;
+    ) as Promise<Route>;
 
   const path =
     "/" +
