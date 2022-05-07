@@ -10,16 +10,18 @@ export type ParameterizedContext<
 > = Context & {
   params: URLParams;
   request: Context["request"] & { body?: RequestSchemaOutputType };
-};
+}
 
-export type Route<
-  RequestSchema extends AnySchema = AnySchema,
-  ResponseBody = {},
-  URLParams = {}
-> = {
+export type Route<RequestSchema = AnySchema, ResponseBody = {}, URLParams = {}> = ({
   method: HTTPMethod;
   handler: (
-    context: ParameterizedContext<RequestSchema["__outputType"], URLParams>
+    context: ParameterizedContext<
+      RequestSchema extends AnySchema ? RequestSchema["__outputType"] : null,
+      URLParams
+    >
   ) => Promise<Response<ResponseBody>>;
-  validation?: RequestSchema;
-};
+}) & (RequestSchema extends AnySchema
+  ? {
+      validation: RequestSchema;
+    }
+  : {});
