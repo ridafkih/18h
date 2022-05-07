@@ -1,8 +1,7 @@
 {
-  "name": "18h",
+  "name": "@ridafkih/18h",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc --declaration && tsc-alias"
   },
@@ -21,5 +20,10 @@
   "dependencies": {
     "koa": "^2.13.4",
     "koa-router": "^10.1.1"
-  }
+  },
+  "types": "./dist/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "description": ""
 }
