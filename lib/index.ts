@@ -14,10 +14,11 @@ interface CreateRouterParams {
 
 /**
  * Creates a router at the specified port & hostname, sourcing
- * the routes from the provided `routeFolder` directory.
- * @param routeFolder The folder to map for paths.
- * @param port The port to host the server on.
- * @param hostname The hostname to host the server on.
+ * the routes from the provided `routesFolder` directory.
+ * @param props.routesFolder The folder to map for paths.
+ * @param props.middleware An object containing arrays of Koa middleware functions.
+ * @param props.port The port to host the server on.
+ * @param props.hostname The hostname to host the server on.
  * @returns A promise which resolves with the `koa` app, and `koa-router` router objects.
  */
 export const createRouter = async ({
