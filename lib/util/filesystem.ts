@@ -41,12 +41,12 @@ const parsePathElement = (pathElement: string) => {
 };
 
 /**
- * Maps the provided origin and pathArray to a valid path string.
+ * Maps the provided origin and pathArray to an import function and path string.
  * @param origin The entry point folder name.
  * @param pathArray The array of path elements.
- * @returns A valid path string to use on a router.
+ * @returns An object containing the path string, and an import function..
  */
-const pathArrayToString = (origin: string, pathArray: string[]) => {
+const pathArrayToRoute = (origin: string, pathArray: string[]) => {
   const importPath = join(origin, ...pathArray);
   const getRoute = () =>
     import(importPath).then(({ default: handler }) => {
@@ -74,5 +74,5 @@ const pathArrayToString = (origin: string, pathArray: string[]) => {
  */
 export const mapDirectoryToRoutes = (origin: string) => {
   const directoryMap = mapDirectory(origin);
-  return directoryMap.map((pathArray) => pathArrayToString(origin, pathArray));
+  return directoryMap.map((pathArray) => pathArrayToRoute(origin, pathArray));
 };

@@ -6,7 +6,7 @@ import { mapDirectoryToRoutes } from "@/util/filesystem";
 import { Route } from "@/@types/router";
 
 interface CreateRouterParams {
-  routeSourceFolder: string;
+  routesFolder: string;
   port: number;
   hostname?: string;
   middleware?: Koa.Middleware[];
@@ -21,7 +21,7 @@ interface CreateRouterParams {
  * @returns A promise which resolves with the `koa` app, and `koa-router` router objects.
  */
 export const createRouter = async ({
-  routeSourceFolder,
+  routesFolder,
   middleware = [],
   port,
   hostname,
@@ -41,7 +41,7 @@ export const createRouter = async ({
     router[method](path, ...pre, handler, ...post);
   };
 
-  for (const { getRoute, path } of mapDirectoryToRoutes(routeSourceFolder))
+  for (const { getRoute, path } of mapDirectoryToRoutes(routesFolder))
     await getRoute().then((route: Route) => registerRoute(path, route));
 
   return new Promise<{ app: Koa; router: Router }>((resolve) => {
