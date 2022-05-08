@@ -27,7 +27,6 @@ import { deleteUserById } from "@/actions/users";
 import { postRequestCleanupAction } from "@/example/ambiguous";
 
 const handler: Route<{}, { success: boolean }, { userId: string }> = {
-  method: "post",
   async handler(context) {
     const success = await deleteUserById(context.params.userId);
 

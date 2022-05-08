@@ -36,7 +36,7 @@ export const createRouter = async ({
 
   const registerRoute = (
     path: string,
-    { method, handler, middleware }: Route
+    { handler, middleware }: Route
   ) => {
     const { pre = [], post = [] } = middleware || {};
     const middlewareChain = [...pre, handler, ...post].map((func) => {
@@ -46,7 +46,7 @@ export const createRouter = async ({
       };
     });
 
-    router[method](path, ...middlewareChain);
+    router.all(path, ...middlewareChain);
   };
 
   for (const { getRoute, path } of mapDirectoryToRoutes(routesFolder))
