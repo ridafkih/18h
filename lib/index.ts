@@ -7,9 +7,9 @@ import { Route } from "@/@types/router";
 
 interface CreateRouterParams {
   routeSourceFolder: string;
-  middleware: Koa.Middleware[];
   port: number;
   hostname?: string;
+  middleware?: Koa.Middleware[];
 }
 
 /**
@@ -22,7 +22,7 @@ interface CreateRouterParams {
  */
 export const createRouter = async ({
   routeSourceFolder,
-  middleware,
+  middleware = [],
   port,
   hostname,
 }: CreateRouterParams) => {
