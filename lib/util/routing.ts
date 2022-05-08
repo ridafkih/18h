@@ -26,5 +26,6 @@ export const handleRoute = (route: Route) => {
   return {
     method: route.method,
     handler,
+		middleware: route.middleware
   };
 };
