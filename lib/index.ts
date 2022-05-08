@@ -1,9 +1,9 @@
-import Koa from "koa";
+import Koa, { Context, Next } from "koa";
 import Router from "koa-router";
 import bodyParser from "koa-bodyparser";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
 
-import { Route } from "@/@types/router";
+import { ParameterizedContext, Route } from "@/@types/router";
 
 interface CreateRouterParams {
   routesFolder: string;
@@ -38,7 +38,14 @@ export const createRouter = async ({
     { method, handler, middleware }: Route
   ) => {
     const { pre = [], post = [] } = middleware || {};
-    router[method](path, ...pre, handler, ...post);
+    const wareChain = [...pre, handler, ...post].map((func, index, array) => {
+      return (context: ParameterizedContext<Context>, next: Next) => {
+        func(context, next);
+        if (index !== array.length - 1) next();
+      };
+    });
+
+    router[method](path, ...wareChain);
   };
 
   for (const { getRoute, path } of mapDirectoryToRoutes(routesFolder))
