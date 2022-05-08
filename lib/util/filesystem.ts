@@ -49,9 +49,9 @@ const parsePathElement = (pathElement: string) => {
 const pathArrayToString = (origin: string, pathArray: string[]) => {
   const importPath = join(origin, ...pathArray);
   const getRoute = () =>
-    import(importPath).then(({ default: handler }) =>
-      handleRoute(handler)
-    ) as Promise<Route>;
+    import(importPath).then(({ default: handler }) => {
+      return handleRoute(handler);
+    }) as Promise<Route>;
 
   const path =
     "/" +

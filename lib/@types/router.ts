@@ -1,4 +1,4 @@
-import { Context } from "koa";
+import { Context, Middleware } from "koa";
 import { HTTPMethod } from "@/@types/http";
 import { Response } from "@/@types/response";
 
@@ -20,6 +20,10 @@ export type Route<RequestSchema = AnySchema, ResponseBody = {}, URLParams = {}> 
       URLParams
     >
   ) => Promise<Response<ResponseBody>>;
+	middleware?: {
+		pre?: Middleware[];
+		post?: Middleware[];
+	}
 }) & (RequestSchema extends AnySchema
   ? {
       validation: RequestSchema;

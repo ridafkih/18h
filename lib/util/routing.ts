@@ -12,11 +12,11 @@ export const handleRoute = (route: Route) => {
       ?.validate(context.request.body)
       .catch(({ errors }) => errors);
 
-		if (errors?.length) {
-			context.status = 400;
-			context.body = { errors };
-			return;
-		};
+    if (errors?.length) {
+      context.status = 400;
+      context.body = { errors };
+      return;
+    }
 
     for (const [key, value] of Object.entries(headers)) context.set(key, value);
     context.status = code;
