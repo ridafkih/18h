@@ -47,6 +47,8 @@ const handler: Route<{}, { success: boolean }, { userId: string }> = {
 export default handler;
 ```
 
+## Example Consumption Based on Example Above
+
 ```ts
 import axios from "axios";
 
