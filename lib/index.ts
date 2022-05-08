@@ -38,14 +38,14 @@ export const createRouter = async ({
     { method, handler, middleware }: Route
   ) => {
     const { pre = [], post = [] } = middleware || {};
-    const wareChain = [...pre, handler, ...post].map((func, index, array) => {
-      return (context: ParameterizedContext<Context>, next: Next) => {
-        func(context, next);
-        if (index !== array.length - 1) next();
+    const middlewareChain = [...pre, handler, ...post].map((func) => {
+      return async (context: ParameterizedContext<Context>, next: Next) => {
+        await func(context, next);
+				await next();
       };
     });
 
-    router[method](path, ...wareChain);
+    router[method](path, ...middlewareChain);
   };
 
   for (const { getRoute, path } of mapDirectoryToRoutes(routesFolder))
