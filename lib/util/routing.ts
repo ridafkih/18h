@@ -8,11 +8,11 @@ export const handleRoute = (route: Route) => {
       headers = {},
     } = await route.handler(context);
 
-    const errors: string[] = await route.validation
+    const errors: string[] | null = await route.validation
       ?.validate(context.request.body)
       .catch(({ errors }) => errors);
 
-		if (errors.length) {
+		if (errors?.length) {
 			context.status = 400;
 			context.body = { errors };
 			return;
