@@ -3,13 +3,17 @@ import { RequestHandlerResult } from "@/@types/request-handler";
 import { AnySchema, ObjectSchema } from "yup";
 import { ObjectShape } from "yup/lib/object";
 
+type RecursivePartial<T> = {
+	[P in keyof T]?: RecursivePartial<T[P]>;
+};
+
 export type ExtendedContext<
   RequestBody extends ObjectShape | null = null,
   QueryParams = Record<string, string | undefined>
 > = Context & {
   request: Context["request"] & {
     body: RequestBody extends ObjectShape
-      ? ObjectSchema<RequestBody>["__outputType"]
+      ? RecursivePartial<ObjectSchema<RequestBody>["__outputType"]>
       : null;
   };
   params: QueryParams;
