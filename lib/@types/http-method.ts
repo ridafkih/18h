@@ -8,7 +8,7 @@ export type ExtendedContext<
   QueryParams = Record<string, string | undefined>
 > = Context & {
   body: RequestBody extends ObjectShape
-    ? ObjectSchema<ObjectShape>["__outputType"]
+    ? ObjectSchema<RequestBody>["__outputType"]
     : null;
   params: QueryParams;
 };
