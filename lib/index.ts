@@ -5,7 +5,6 @@ import { mapDirectoryToRoutes } from "@/util/filesystem";
 import { handleRoute } from "@/util/routing";
 
 import { ExtendedContext } from "@/@types/http-method";
-import { RouteController } from "@/@types/route-controller";
 
 type ParsedController = ReturnType<typeof handleRoute>;
 

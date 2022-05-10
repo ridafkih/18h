@@ -20,12 +20,12 @@ export type ExtendedContext<
 };
 
 export type HTTPMethodRules<
-  ResponseBody = {},
+  ResponseBody = object,
   RequestBody extends ObjectShape | null = null,
   QueryParams = Record<string, string | undefined>
 > = {
   handler(
-    context: ExtendedContext<RequestBody, QueryParams>
+    context?: ExtendedContext<RequestBody, QueryParams>
   ): Promise<RequestHandlerResult<ResponseBody>>;
   middleware?: {
     pre?: Middleware[];
