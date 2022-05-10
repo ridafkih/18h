@@ -7,7 +7,9 @@ export type ExtendedContext<
   RequestBody extends ObjectShape | null = null,
   QueryParams = Record<string, string | undefined>
 > = Context & {
-  body: RequestBody;
+  body: RequestBody extends ObjectShape
+    ? ObjectSchema<ObjectShape>["__outputType"]
+    : null;
   params: QueryParams;
 };
 
