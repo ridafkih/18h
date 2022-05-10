@@ -1,9 +1,13 @@
-import Koa, { Context, Next } from "koa";
+import Koa, { Next } from "koa";
 import Router from "koa-router";
 import bodyParser from "koa-bodyparser";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
+import { handleRoute } from "@/util/routing";
 
-import { ParameterizedContext, Route } from "@/@types/router";
+import { ExtendedContext } from "@/@types/http-method";
+import { RouteController } from "@/@types/route-controller";
+
+type ParsedController = ReturnType<typeof handleRoute>;
 
 interface CreateRouterParams {
   routesFolder: string;
@@ -34,23 +38,28 @@ export const createRouter = async ({
   app.use(router.routes());
   middleware.forEach(app.use);
 
-  const registerRoute = (
-    path: string,
-    { handler, middleware }: Route
-  ) => {
-    const { pre = [], post = [] } = middleware || {};
-    const middlewareChain = [...pre, handler, ...post].map((func) => {
-      return async (context: ParameterizedContext<Context>, next: Next) => {
-        await func(context, next);
-				await next();
-      };
-    });
+  const registerController = (path: string, controller: ParsedController) => {
+    for (const { internalHandler, method, middleware } of controller) {
+      const { pre = [], post = [] } = middleware || {};
+      const middlewareChain = [...pre, internalHandler, ...post].map((func) => {
+        return async (context: ExtendedContext, next: Next) => {
+          await func(context, next);
+          await next();
+        };
+      });
 
-    router.all(path, ...middlewareChain);
+      if (typeof router[method as keyof typeof router] === "function")
+        (router[method as keyof typeof router] as Function)(
+          path,
+          ...middlewareChain
+        );
+    }
   };
 
   for (const { getRoute, path } of mapDirectoryToRoutes(routesFolder))
-    await getRoute().then((route: Route) => registerRoute(path, route));
+    await getRoute().then((controller: ParsedController) =>
+      registerController(path, controller)
+    );
 
   return new Promise<{ app: Koa; router: Router }>((resolve) => {
     app.listen(port, hostname, () => {
@@ -59,4 +68,5 @@ export const createRouter = async ({
   });
 };
 
-export { Route };
+export { RouteController } from "@/@types/route-controller";
+export * from "@/@types/http-method";
