@@ -5,7 +5,7 @@ export type ParsedRouteController = ReturnType<typeof handleRoute>;
 
 export type RouteController<
   AllowedMethods extends { [K in MethodName]?: object } | null = null,
-  RouteParams extends Record<string, string | undefined> = {}
+  RouteParams extends Record<string, string | undefined> = Record<string, never>
 > = AllowedMethods extends null
   ? Record<string, never>
   : {

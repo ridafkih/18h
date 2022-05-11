@@ -16,9 +16,9 @@ export const handleRoute = (controller: RouteController) => {
         headers = {},
       } = await rule.handler(context);
 
-      const errors: string[] = await rule.validation
+      const errors: string[] = (await rule.validation
         ?.validate(context.request?.body)
-        .catch(({ errors }: { errors: string[] }) => errors) as string[];
+        .catch(({ errors }: { errors: string[] }) => errors)) as string[];
 
       if (errors?.length) {
         context.status = 400;

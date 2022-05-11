@@ -42,16 +42,21 @@ export const createRouter = async ({
       const { pre = [], post = [] } = middleware || {};
       const middlewareChain = [...pre, internalHandler, ...post].map((func) => {
         return async (context: ExtendedContext, next: Next) => {
-          await func(context as any, next);
+          await func(context, next);
           await next();
         };
       });
 
       if (typeof router[method as keyof typeof router] === "function")
-        (router[method as keyof typeof router] as Function)(
-          path,
-          ...middlewareChain
-        );
+        (
+          router[method as keyof typeof router] as (
+            route: string,
+            ...middleware: ((
+              context: ExtendedContext,
+              next: Next
+            ) => Promise<void>)[]
+          ) => void
+        )(path, ...middlewareChain);
     }
   };
 

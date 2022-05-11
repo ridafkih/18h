@@ -67,7 +67,7 @@ const pathArrayToRoute = (origin: string, pathArray: string[]) => {
         return accumulator;
       }, [] as string[])
       .join("/");
-			
+
   return { getRoute, path };
 };
 
