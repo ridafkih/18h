@@ -1,13 +1,13 @@
 import { RouteController } from "@/@types/route-controller";
 import {
   ExtendedContext,
-  HTTPMethodRules,
+  RouteHandlerRules,
   MethodName,
 } from "@/@types/http-method";
 
 export const handleRoute = (controller: RouteController) => {
   return Object.entries(controller).map((controllerRule) => {
-    const [method, rule] = controllerRule as [MethodName, HTTPMethodRules];
+    const [method, rule] = controllerRule as [MethodName, RouteHandlerRules];
 
     const internalHandler = async (context: ExtendedContext) => {
       const {
@@ -16,9 +16,9 @@ export const handleRoute = (controller: RouteController) => {
         headers = {},
       } = await rule.handler(context);
 
-      const errors: string[] | null = await rule.validation
-        ?.validate(context.request.body)
-        .catch(({ errors }) => errors);
+      const errors: string[] = await rule.validation
+        ?.validate(context.request?.body)
+        .catch(({ errors }: { errors: string[] }) => errors) as string[];
 
       if (errors?.length) {
         context.status = 400;
@@ -27,7 +27,7 @@ export const handleRoute = (controller: RouteController) => {
       }
 
       context.status = code;
-      (context as unknown as { body: object | null }).body = body;
+      (context as unknown as { body: object | unknown }).body = body;
       for (const [key, value] of Object.entries(headers))
         context.set(key, value.toString());
     };

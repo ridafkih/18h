@@ -4,28 +4,35 @@ import { AnySchema, ObjectSchema } from "yup";
 import { ObjectShape } from "yup/lib/object";
 
 type RecursivePartial<T> = {
-	[P in keyof T]?: RecursivePartial<T[P]>;
+  [P in keyof T]?: RecursivePartial<T[P]>;
 };
+
+interface OverrideBody<T> extends Exclude<Context["request"], "body"> {
+  body: T;
+}
+
+interface OverrideRequest<T, RouteParams> extends Exclude<Context, "body"> {
+  request: OverrideBody<T>;
+  params: RouteParams;
+}
 
 export type ExtendedContext<
   RequestBody extends ObjectShape | null = null,
-  QueryParams = Record<string, string | undefined>
-> = Context & {
-  request: Context["request"] & {
-    body: RequestBody extends ObjectShape
-      ? RecursivePartial<ObjectSchema<RequestBody>["__outputType"]>
-      : null;
-  };
-  params: QueryParams;
-};
+  RouteParams = Record<string, string | undefined>
+> = OverrideRequest<
+  RequestBody extends ObjectShape
+    ? RecursivePartial<ObjectSchema<RequestBody>["__outputType"]>
+    : {},
+  RouteParams
+>;
 
-export type HTTPMethodRules<
-  ResponseBody = object,
+export type RouteHandlerRules<
+  ResponseBody = unknown,
   RequestBody extends ObjectShape | null = null,
-  QueryParams = Record<string, string | undefined>
+  RouteParams = Record<string, string | undefined>
 > = {
   handler(
-    context?: ExtendedContext<RequestBody, QueryParams>
+    context?: ExtendedContext<RequestBody, RouteParams>
   ): Promise<RequestHandlerResult<ResponseBody>>;
   middleware?: {
     pre?: Middleware[];
@@ -50,39 +57,8 @@ export type MethodName =
   | "post"
   | "put";
 
-export type HTTPMethod<
-  Method extends MethodName,
-  ResponseBody,
+export type MethodController<
+  ResponseBody = null,
   RequestBody extends ObjectShape | null = null,
-  QueryParams = Record<string, string | undefined>
-> = Record<Method, HTTPMethodRules<ResponseBody, RequestBody, QueryParams>>;
-
-export type ANY<
-  ResponseBody = null,
-  RequestBody extends ObjectShape | null = null
-> = HTTPMethod<"any", ResponseBody, RequestBody>;
-
-export type DELETE<
-  ResponseBody = null,
-  RequestBody extends ObjectShape | null = null
-> = HTTPMethod<"delete", ResponseBody, RequestBody>;
-
-export type GET<
-  ResponseBody = null,
-  RequestBody extends ObjectShape | null = null
-> = HTTPMethod<"get", ResponseBody, RequestBody>;
-
-export type PATCH<
-  ResponseBody = null,
-  RequestBody extends ObjectShape | null = null
-> = HTTPMethod<"patch", ResponseBody, RequestBody>;
-
-export type POST<
-  ResponseBody = null,
-  RequestBody extends ObjectShape | null = null
-> = HTTPMethod<"post", ResponseBody, RequestBody>;
-
-export type PUT<
-  ResponseBody = null,
-  RequestBody extends ObjectShape | null = null
-> = HTTPMethod<"put", ResponseBody, RequestBody>;
+  RouteParams = Record<string, string | undefined>
+> = RouteHandlerRules<ResponseBody, RequestBody, RouteParams>;

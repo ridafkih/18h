@@ -42,7 +42,7 @@ export const createRouter = async ({
       const { pre = [], post = [] } = middleware || {};
       const middlewareChain = [...pre, internalHandler, ...post].map((func) => {
         return async (context: ExtendedContext, next: Next) => {
-          await func(context, next);
+          await func(context as any, next);
           await next();
         };
       });
