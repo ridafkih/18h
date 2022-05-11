@@ -32,7 +32,7 @@ export type RouteHandlerRules<
   RouteParams = Record<string, string | undefined>
 > = {
   handler(
-    context?: ExtendedContext<RequestBody, RouteParams>
+    context: ExtendedContext<RequestBody, RouteParams>
   ): Promise<RequestHandlerResult<ResponseBody>>;
   middleware?: {
     pre?: Middleware[];
