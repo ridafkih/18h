@@ -22,7 +22,7 @@ export type ExtendedContext<
 > = OverrideRequest<
   RequestBody extends ObjectShape
     ? RecursivePartial<ObjectSchema<RequestBody>["__outputType"]>
-    : {},
+    : Record<string, never>,
   RouteParams
 >;
 
@@ -44,7 +44,7 @@ export type RouteHandlerRules<
     }
   : {
       validation: ObjectSchema<
-        RequestBody extends ObjectShape ? RequestBody : {}
+        RequestBody extends ObjectShape ? RequestBody : Record<string, never>
       >;
     });
 
