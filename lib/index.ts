@@ -33,6 +33,13 @@ export const createRouter = async ({
   const app = new Koa();
   const router = new Router();
 
+  app.use((context, next) => {
+    next().catch((error: Error) => {
+      if (!(error instanceof SyntaxError)) return;
+      context.status = 500;
+    });
+  });
+
   app.use(bodyParser());
   app.use(router.routes());
   middleware.forEach(app.use);
