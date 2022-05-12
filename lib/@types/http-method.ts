@@ -1,4 +1,4 @@
-import { Context, Middleware, Next } from "koa";
+import { Context, Middleware } from "koa";
 import { RequestHandlerResult } from "@/@types/request-handler";
 import { AnySchema, ObjectSchema } from "yup";
 import { ObjectShape } from "yup/lib/object";
