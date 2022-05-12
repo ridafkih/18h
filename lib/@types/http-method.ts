@@ -55,7 +55,7 @@ export type RouteHandlerRules<
     });
 
 export type MethodName =
-  | "any"
+  | "all"
   | "delete"
   | "get"
   | "delete"
