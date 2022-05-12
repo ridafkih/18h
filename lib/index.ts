@@ -1,10 +1,10 @@
 import Koa, { Next } from "koa";
 import Router from "koa-router";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
-import { handleParseError, bodyParser } from "@/middleware/body-parser";
 
 import { ExtendedContext } from "@/@types/http-method";
 import { ParsedRouteController } from "@/@types/route-controller";
+import bodyParser from "koa-bodyparser";
 
 interface CreateRouterParams {
   routesFolder: string;
@@ -38,9 +38,16 @@ export const createRouter = async ({
     controller: ParsedRouteController
   ) => {
     for (const { internalHandler, method, middleware, accept } of controller) {
+      const enableTypes: string[] = accept || [];
       const { pre = [], post = [] } = middleware || {};
-      const parsingMiddleware = accept
-        ? [handleParseError, bodyParser({ enableTypes: accept })]
+
+      const parsingMiddleware = enableTypes.length
+        ? [
+            bodyParser({
+              enableTypes: accept,
+              onerror: (_error, context) => context.throw(422),
+            }),
+          ]
         : [];
 
       const middlewareChain = [
