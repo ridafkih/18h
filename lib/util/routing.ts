@@ -10,12 +10,6 @@ export const handleRoute = (controller: RouteController) => {
     const [method, rule] = controllerRule as [MethodName, RouteHandlerRules];
 
     const internalHandler = async (context: ExtendedContext) => {
-      const {
-        body = null,
-        code = 200,
-        headers = {},
-      } = await rule.handler(context);
-
       const errors: string[] = (await rule.validation
         ?.validate(context.request?.body)
         .catch(({ errors }: { errors: string[] }) => errors)) as string[];
@@ -25,6 +19,12 @@ export const handleRoute = (controller: RouteController) => {
         (context as unknown as { body: object }).body = { errors };
         return;
       }
+
+      const {
+        body = null,
+        code = 200,
+        headers = {},
+      } = await rule.handler(context);
 
       context.status = code;
       (context as unknown as { body: object | unknown }).body = body;
