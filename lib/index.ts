@@ -39,7 +39,7 @@ export const createRouter = async ({
   ) => {
     for (const { internalHandler, method, middleware, accept } of controller) {
       const { pre = [], post = [] } = middleware || {};
-      const parsingMiddleware = accept ? [handleParseError, parseBody] : [];
+      const parsingMiddleware = accept ? [handleParseError, parseBody()] : [];
       const middlewareChain = [
         ...parsingMiddleware,
         ...pre,

@@ -1,7 +1,7 @@
 {
   "name": "18h",
   "description": "A Next.js style dynamic API router for Koa-based APIs.",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "repository": {
     "url": "https://github.com/ridafkih/18h"
   },
