@@ -1,8 +1,11 @@
-import { Context, Middleware } from "koa";
+import { Context, Middleware, Next } from "koa";
 import { RequestHandlerResult } from "@/@types/request-handler";
 import { AnySchema, ObjectSchema } from "yup";
 import { ObjectShape } from "yup/lib/object";
-import bodyParser from "koa-bodyparser";
+
+type PromiseMiddleware = (
+  ...args: Parameters<Middleware>
+) => Promise<ReturnType<Middleware>>;
 
 type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -36,8 +39,8 @@ export type RouteHandlerRules<
     context: ExtendedContext<RequestBody, RouteParams>
   ): Promise<RequestHandlerResult<ResponseBody>>;
   middleware?: {
-    pre?: Middleware[];
-    post?: Middleware[];
+    pre?: PromiseMiddleware[];
+    post?: PromiseMiddleware[];
   };
 } & (RequestBody extends null
   ? {
