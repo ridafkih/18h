@@ -1,7 +1,7 @@
 import Koa, { Next } from "koa";
 import Router from "koa-router";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
-import { handleParseError, parseBody } from "@/middleware/body-parser";
+import { handleParseError, bodyParser } from "@/middleware/body-parser";
 
 import { ExtendedContext } from "@/@types/http-method";
 import { ParsedRouteController } from "@/@types/route-controller";
@@ -39,18 +39,19 @@ export const createRouter = async ({
   ) => {
     for (const { internalHandler, method, middleware, accept } of controller) {
       const { pre = [], post = [] } = middleware || {};
-      const parsingMiddleware = accept ? [handleParseError, parseBody()] : [];
+      const parsingMiddleware = accept
+        ? [handleParseError, bodyParser({ enableTypes: accept })]
+        : [];
+
       const middlewareChain = [
         ...parsingMiddleware,
         ...pre,
-        internalHandler,
-        ...post,
-      ].map((func) => {
-        return async (context: ExtendedContext, next: Next) => {
-          await func(context, next);
+        async (context: ExtendedContext, next: Next) => {
+          await internalHandler(context);
           await next();
-        };
-      });
+        },
+        ...post,
+      ];
 
       if (typeof router[method as keyof typeof router] === "function")
         (

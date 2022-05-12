@@ -45,7 +45,7 @@ export type RouteHandlerRules<
       validation?: AnySchema;
     }
   : {
-      accept: NonNullable<bodyParser.Options["enableTypes"]>;
+      accept: ("json" | "form")[];
       validation: ObjectSchema<
         RequestBody extends ObjectShape ? RequestBody : Record<string, never>
       >;
