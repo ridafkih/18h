@@ -40,12 +40,14 @@ export const createRouter = async ({
   const registerController = (path: string, controller: ParsedController) => {
     for (const { internalHandler, method, middleware } of controller) {
       const { pre = [], post = [] } = middleware || {};
-      const middlewareChain = [...pre, internalHandler, ...post].map((func) => {
-        return async (context: ExtendedContext, next: Next) => {
-          await func(context, next);
+      const middlewareChain = [
+        ...pre,
+        async (context: ExtendedContext, next: Next) => {
+          await internalHandler(context);
           await next();
-        };
-      });
+        },
+        ...post,
+      ];
 
       if (typeof router[method as keyof typeof router] === "function")
         (
