@@ -2,6 +2,7 @@ import { Context, Middleware } from "koa";
 import { RequestHandlerResult } from "@/@types/request-handler";
 import { AnySchema, ObjectSchema } from "yup";
 import { ObjectShape } from "yup/lib/object";
+import bodyParser from "koa-bodyparser";
 
 type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -40,9 +41,11 @@ export type RouteHandlerRules<
   };
 } & (RequestBody extends null
   ? {
+      accept?: never;
       validation?: AnySchema;
     }
   : {
+      accept: NonNullable<bodyParser.Options["enableTypes"]>;
       validation: ObjectSchema<
         RequestBody extends ObjectShape ? RequestBody : Record<string, never>
       >;

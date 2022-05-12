@@ -32,6 +32,11 @@ export const handleRoute = (controller: RouteController) => {
         context.set(key, value.toString());
     };
 
-    return { method, internalHandler, middleware: rule.middleware };
+    return {
+      method,
+      internalHandler,
+      middleware: rule.middleware,
+      accept: rule.accept,
+    };
   });
 };

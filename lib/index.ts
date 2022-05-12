@@ -1,12 +1,10 @@
 import Koa, { Next } from "koa";
 import Router from "koa-router";
-import bodyParser from "koa-bodyparser";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
-import { handleRoute } from "@/util/routing";
+import { handleParseError, parseBody } from "@/middleware/body-parser";
 
 import { ExtendedContext } from "@/@types/http-method";
-
-type ParsedController = ReturnType<typeof handleRoute>;
+import { ParsedRouteController } from "@/@types/route-controller";
 
 interface CreateRouterParams {
   routesFolder: string;
@@ -32,29 +30,27 @@ export const createRouter = async ({
 }: CreateRouterParams) => {
   const app = new Koa();
   const router = new Router();
-
-  app.use((context, next) => {
-    next().catch((error: Error) => {
-      if (!(error instanceof SyntaxError)) return;
-      context.status = 500;
-    });
-  });
-
-  app.use(bodyParser());
   app.use(router.routes());
   middleware.forEach(app.use);
 
-  const registerController = (path: string, controller: ParsedController) => {
-    for (const { internalHandler, method, middleware } of controller) {
+  const registerRouteController = (
+    path: string,
+    controller: ParsedRouteController
+  ) => {
+    for (const { internalHandler, method, middleware, accept } of controller) {
       const { pre = [], post = [] } = middleware || {};
+      const parsingMiddleware = accept ? [handleParseError, parseBody] : [];
       const middlewareChain = [
+        ...parsingMiddleware,
         ...pre,
-        async (context: ExtendedContext, next: Next) => {
-          await internalHandler(context);
-          await next();
-        },
+        internalHandler,
         ...post,
-      ];
+      ].map((func) => {
+        return async (context: ExtendedContext, next: Next) => {
+          await func(context, next);
+          await next();
+        };
+      });
 
       if (typeof router[method as keyof typeof router] === "function")
         (
@@ -70,8 +66,8 @@ export const createRouter = async ({
   };
 
   for (const { getRoute, path } of mapDirectoryToRoutes(routesFolder))
-    await getRoute().then((controller: ParsedController) =>
-      registerController(path, controller)
+    await getRoute().then((controller: ParsedRouteController) =>
+      registerRouteController(path, controller)
     );
 
   return new Promise<{ app: Koa; router: Router }>((resolve) => {
