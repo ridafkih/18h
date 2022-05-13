@@ -3,12 +3,16 @@
 <h1 align="center">18h</h1>
 
 <div align="center">
-	<a href="https://badge.fury.io/js/18h">
+	<a href="https://npmjs.com/package/18h">
 		<img src="https://badge.fury.io/js/18h.svg" alt="npm version" height="18">
 	</a>
-	<img src="https://img.shields.io/github/license/ridafkih/18h">
-	<img src="https://img.shields.io/github/followers/ridafkih?logo=github&style=social&label=Follow">
-	<img src="https://img.shields.io/twitter/follow/ridafkih?label=Follow">
+  <img src="https://img.shields.io/github/license/ridafkih/18h">
+  <a href="https://github.com/ridafkih/">
+	  <img src="https://img.shields.io/github/followers/ridafkih?logo=github&style=social&label=Follow">
+  </a>
+  <a href="https://twitter.com/ridafkih">
+	  <img src="https://img.shields.io/twitter/follow/ridafkih?label=Follow">
+  </a>
 </div>
 
 <br>
