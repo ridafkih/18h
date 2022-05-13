@@ -18,7 +18,7 @@
 <br>
 
 <div align="center">
-	<a href="#installaton">Installation</a>
+	<a href="#installation">Installation</a>
 	<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
 	<a href="#get-started">Get Started</a>
 	<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -135,7 +135,7 @@ src/
 tsconfig.json
 ```
 
-<h4>API Path Structure</h4>
+<h4>Resulting API Path Structure</h4>
 
 ```
 /
