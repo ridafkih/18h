@@ -108,30 +108,31 @@ The following file structure would generate the corresponding API endpoint struc
 
 ```
 package.json
-package-log.json
+package-lock.json
+node_modules/
 src/
-├── routes/
-│   ├── index.ts
-│   ├── feed/
-│   │   └── index.ts
-│   ├── user/
-│   │   ├── delete.ts
-│   │   ├── index.ts
-│   │   └── settings/
-│   │       ├── private.ts
-│   │       └── name.ts
-│   ├── users/
-│   │   └── [userId]/
-│   │       ├── block.ts
-│   │       ├── index.ts
-│   │       └── follow.ts
-│   └── posts/
-│       ├── create.ts
-│       ├── delete.ts
-│       ├── index.ts
-│       ├── like.ts
-│       └── share.ts
-└── index.ts
+├── index.ts
+└── routes/
+    ├── index.ts
+    ├── feed/
+    │   └── index.ts
+    ├── user/
+    │   ├── delete.ts
+    │   ├── index.ts
+    │   └── settings/
+    │       ├── private.ts
+    │       └── name.ts
+    ├── users/
+    │   └── [userId]/
+    │       ├── block.ts
+    │       ├── index.ts
+    │       └── follow.ts
+    └── posts/
+        ├── create.ts
+        ├── delete.ts
+        ├── index.ts
+        ├── like.ts
+        └── share.ts
 tsconfig.json
 ```
 
