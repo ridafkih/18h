@@ -264,6 +264,7 @@ type VersionResponseBody = {
 const controller: RouteController<{
   all: MethodController<VersionResponseBody>;
 }> = {
+  all: {
     async handler(context) {
       return { body: { version } };
     },
