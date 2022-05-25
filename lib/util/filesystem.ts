@@ -1,10 +1,6 @@
 import { join } from "path";
 import { readdirSync } from "fs";
-import { handleRoute } from "@/util/routing";
-import {
-  ParsedRouteController,
-  RouteController,
-} from "@/@types/route-controller";
+import { route } from "@/src/create-route";
 
 type DirectoryMap = string[][];
 
@@ -51,12 +47,9 @@ const parsePathElement = (pathElement: string) => {
  */
 const pathArrayToRoute = (origin: string, pathArray: string[]) => {
   const importPath = join(origin, ...pathArray);
-  const getRoute = () =>
-    import(importPath).then(
-      ({ default: handler }: { default: RouteController }) => {
-        return handleRoute(handler);
-      }
-    ) as Promise<ParsedRouteController>;
+  const routes = import(importPath).then(
+    ({ default: handler }: { default: ReturnType<typeof route> }) => handler
+  );
 
   const path =
     "/" +
@@ -68,7 +61,7 @@ const pathArrayToRoute = (origin: string, pathArray: string[]) => {
       }, [] as string[])
       .join("/");
 
-  return { getRoute, path };
+  return { routes, path };
 };
 
 /**
