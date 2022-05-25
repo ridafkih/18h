@@ -53,7 +53,7 @@ export const router = async ({
 
       const handlerResolver = async (context: ExtendedContext, next: Next) => {
         const requestValidation = await schema.request.safeParseAsync(
-          context.request.body
+          context.request.body ?? null
         );
 
         if (!requestValidation.success) {
