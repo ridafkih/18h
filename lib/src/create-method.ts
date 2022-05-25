@@ -4,9 +4,10 @@ import type { SomeZodObject, ZodNull } from "zod";
 
 type MiddlewareStack = Array<MiddlewareStack>;
 
-type CreateMethodOptions<
+export type CreateMethodOptions<
   RequestSchema extends SomeZodObject | ZodNull,
-  ResponseSchema extends SomeZodObject | ZodNull
+  ResponseSchema extends SomeZodObject | ZodNull,
+  URLParams extends Record<string, string>
 > = {
   schema: {
     request: RequestSchema;
@@ -16,7 +17,7 @@ type CreateMethodOptions<
     pre?: MiddlewareStack;
     post?: MiddlewareStack;
   };
-  handler: MethodHandlerFunction<RequestSchema, ResponseSchema>;
+  handler: MethodHandlerFunction<RequestSchema, ResponseSchema, URLParams>;
 } & (RequestSchema extends SomeZodObject
   ? {
       accepts: ("json" | "form")[];
@@ -32,20 +33,8 @@ type CreateMethodOptions<
  */
 export const method = <
   ResponseSchema extends SomeZodObject | ZodNull,
-  RequestSchema extends SomeZodObject | ZodNull
+  RequestSchema extends SomeZodObject | ZodNull,
+  URLParams extends Record<string, string>
 >(
-  options: CreateMethodOptions<RequestSchema, ResponseSchema>
-) => {
-  return options;
-};
-
-method({
-  accepts: ["json"],
-  schema: {
-    request: z.object({ a: z.string().optional() }),
-    response: z.null(),
-  },
-  async handler(context) {
-    return {};
-  },
-});
+  options: CreateMethodOptions<RequestSchema, ResponseSchema, URLParams>
+) => options;

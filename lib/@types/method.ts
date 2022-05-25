@@ -10,15 +10,20 @@ interface OverrideRequest<T> extends Exclude<Context, "body"> {
 }
 
 export type ExtendedContext<
-  RequestBody extends SomeZodObject | ZodNull = ZodNull
+  RequestBody extends SomeZodObject | ZodNull = ZodNull,
+  URLParams extends Record<string, string> = Record<string, never>
 > = OverrideRequest<
   RequestBody extends SomeZodObject
     ? ZodInfer<RequestBody>
     : Record<string, never>
->;
+> & {
+  params: URLParams;
+};
 
-type MethodContext<RequestSchema extends SomeZodObject | ZodNull> =
-  ExtendedContext<RequestSchema>;
+type MethodContext<
+  RequestSchema extends SomeZodObject | ZodNull,
+  URLParams extends Record<string, string> = Record<string, never>
+> = ExtendedContext<RequestSchema, URLParams>;
 
 type MethodHandlerFunctionResponse<ResponseSchema> = {
   headers?: Record<string, string>;
@@ -31,7 +36,8 @@ type MethodHandlerFunctionResponse<ResponseSchema> = {
 
 export type MethodHandlerFunction<
   RequestSchema extends SomeZodObject | ZodNull,
-  ResponseSchema extends SomeZodObject | ZodNull
+  ResponseSchema extends SomeZodObject | ZodNull,
+  URLParams extends Record<string, string>
 > = (
-  context: MethodContext<RequestSchema>
+  context: MethodContext<RequestSchema, URLParams>
 ) => Promise<MethodHandlerFunctionResponse<ResponseSchema>>;
