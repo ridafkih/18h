@@ -58,11 +58,11 @@ mkdir routes
 
 ```ts
 import { join } from "path";
-import { createRouter } from "18h";
+import { router } from "18h";
 
-createRouter({
+router({
   routesFolder: join(__dirname, "routes"),
-  port: 4000,
+  port: 8000,
   hostname: "localhost",
 });
 ```
@@ -75,7 +75,7 @@ const logRequest = async (context, next) => {
   await next();
 };
 
-createRouter({
+router({
   // ...
   middleware: [logRequest],
 });
@@ -165,90 +165,46 @@ tsconfig.json
 ```ts
 // src/routes/users/[userId]/block
 
-import { RouteController, MethodController } from "18h";
-import { object, string, StringSchema } from "yup";
+import { route, method, validation } from "18h";
 
-import { checkIsAuthenticated, canUserBlockUser } from "@/example/ambiguous";
-
-/**
- * We can define the structure of the response.
- */
-type ResponseStructure = {
-  success: boolean;
-};
-
-/**
- * Notice that the request body schema is defined
- * using types from the "yup" validation library.
- *
- * This is so that validation can occur, it will
- * resolve to the output type within the context
- * so we can still get type-safe usage.
- */
-type RequestBodySchema = {
-  reason: StringSchema;
-};
-
-/**
- * Since the API route uses a route parameter, that
- * being :userId, we can define that here.
- */
-type RouteParameters = {
-  userId: string;
-};
-
-const route: RouteController<
-  {
-    post: MethodController<ResponseStructure, RequestBodySchema>;
-  },
-  RouteParameters
-> = {
-  post: {
-    /**
-     * When a request body schema is present, you
-     * must provide an array of accepted types, that
-     * being "json", "form", or both.
-     */
-    accept: ["json"],
-    /**
-     * When a request body schema is present, you
-     * must provide a "yup" data validation object schema.
-     * This wil ensure data integrity, and reject it if not.
-     */
-    validation: object({
-      reason: string().required("reason is required"),
-    }),
-    /**
-     * You may provide an array of middleware. These are
-     * to be asynchronous functions. `pre` middleware will
-     * run before the handler, `post` will run after.
-     */
+export default route<{ userId: string }>({
+  get: method({
+    /** If you are accepting a body, you must
+     * define whether it can be `"form"`,
+     * `"json"`, or both. */
+    accepts: ["json"],
+    /** Validation, request, and response schema
+     * definition is done in one swoop. Uses "zod"
+     * library under the hood. */
+    schema: {
+      request: validation.null(),
+      response: validation.object({
+        userId: validation.string(),
+      }),
+    },
+    /** Optional middleware, `pre` will occur
+     * before the hanler, while `post` will happen
+     * after. */
     middleware: {
-      pre: [checkIsAuthenticated, canUserBlockUser],
+      pre: [],
       post: [],
     },
-    /**
-     * The handler should be where the core logic is run,
-     * and where the response is handled.
-     *
-     * The only required field in the return of the handler
-     * function is the `body` *if* the response body structure
-     * is defined.
-     */
     async handler(context) {
-      console.log(context.params.userId);
-      const requestingUser = context.request.user;
+      console.log(context.params.userId); // :userId sourced from URL.
+      console.log(context.request.body); // null
 
       return {
+        status: 200,
         headers: {
-          "x-user-id": requestedUser?.id,
+          "x-custom-header": "true",
         },
-        body: { success },
-        code: 200,
+        body: {
+          userId: "some_id",
+        },
       };
     },
-  },
-};
+  }),
+});
 ```
 
 <h2>Examples</h2>
@@ -256,23 +212,22 @@ const route: RouteController<
 We can create a simple endpoint that just responds with the node package version of the current project we're in. The endpoint will work on all HTTP methods, not just `GET`, but we could change it to do that by changing all occurances of `all` to `get`.
 
 ```ts
+import { route, method, validation } from "18h";
 const { npm_package_version: version } = process.env;
 
-type VersionResponseBody = {
-  version?: string;
-};
-
-const controller: RouteController<{
-  all: MethodController<VersionResponseBody>;
-}> = {
-  all: {
-    async handler(context) {
+export default route({
+  all: method({
+    schema: {
+      request: validation.null(),
+      response: validation.object({
+        version: validation.string().optional(),
+      }),
+    },
+    async handler() {
       return { body: { version } };
     },
-  },
-};
-
-export default controller;
+  }),
+});
 ```
 
 <h2>Contributions</h2>
