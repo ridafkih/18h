@@ -1,8 +1,8 @@
-import { z } from "zod";
 import type { MethodHandlerFunction } from "@/@types/method";
 import type { SomeZodObject, ZodNull } from "zod";
+import type { Middleware } from "koa";
 
-type MiddlewareStack = Array<MiddlewareStack>;
+type MiddlewareStack = Array<Middleware>;
 
 export type CreateMethodOptions<
   RequestSchema extends SomeZodObject | ZodNull,
