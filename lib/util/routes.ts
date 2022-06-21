@@ -3,7 +3,7 @@ import { getParsingMiddleware } from "@/util/middleware";
 import type { route } from "@/src/create-route";
 import type { ExtendedContext } from "@/@types/method";
 import type { Next } from "koa";
-import { Errors } from "@/@types/errors";
+import type { Errors } from "@/@types/errors";
 
 type MethodRegistrationFunction = (
   route: string,

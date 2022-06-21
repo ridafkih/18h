@@ -1,4 +1,4 @@
-import { CreateMethodOptions } from "@/src/create-method";
+import type { CreateMethodOptions } from "@/src/create-method";
 import type { MethodName } from "@/@types/http";
 import type { SomeZodObject, ZodNull } from "zod";
 

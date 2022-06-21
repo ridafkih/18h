@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import { SomeZodObject, ZodNull, infer as ZodInfer } from "zod";
+import type { Context } from "koa";
+import type { SomeZodObject, ZodNull, infer as ZodInfer } from "zod";
 
 interface OverrideBody<T> extends Exclude<Context["request"], "body"> {
   body: T;
