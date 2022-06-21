@@ -30,6 +30,11 @@ export const registerRoute = (
       middleware: { pre = [], post = [] } = {},
     } = controller;
 
+    const checkIfResponded = (context: ExtendedContext, next: Next) => {
+      if (context.headerSent) return;
+      else return next();
+    };
+
     const handlerResolver = async (context: ExtendedContext, next: Next) => {
       const requestValidation = await schema.request.safeParseAsync(
         context.request.body ?? null
@@ -72,6 +77,7 @@ export const registerRoute = (
     ] as MethodRegistrationFunction;
 
     const chain = [
+      checkIfResponded,
       ...getParsingMiddleware(accepts),
       ...pre,
       handlerResolver,
