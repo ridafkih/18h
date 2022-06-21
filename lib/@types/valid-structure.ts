@@ -1,8 +1,5 @@
-import { SomeZodObject, ZodArray, ZodNull, ZodString, ZodTypeAny } from "zod";
+import { ZodFirstPartySchemaTypes, ZodNull } from "zod";
 
-export type NonNullableValidStructure =
-  | SomeZodObject
-  | ZodArray<ZodTypeAny>
-  | ZodString;
+export type NonNullableValidStructure = ZodFirstPartySchemaTypes;
 
 export type ValidStructure = NonNullableValidStructure | ZodNull;
