@@ -55,7 +55,7 @@ export const registerRoute = (
       const response = await handler(context);
 
       const responseValidation = await schema.response.safeParseAsync(
-        "body" in response ? response.body : ""
+        "body" in response ? response.body : null
       );
 
       if (!responseValidation.success) {
@@ -64,7 +64,7 @@ export const registerRoute = (
         return;
       }
 
-      context.body = responseValidation.data;
+      context.body = responseValidation.data ?? undefined;
       context.status = response.status ?? 200;
 
       for (const [key, value] of Object.entries(response.headers || {}))
