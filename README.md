@@ -172,7 +172,7 @@ export default route<{ userId: string }>({
     /** If you are accepting a body, you must
      * define whether it can be `"form"`,
      * `"json"`, or both. */
-    accepts: ["json"],
+    // accepts: ["json", "form"],
     /** Validation, request, and response schema
      * definition is done in one swoop. Uses "zod"
      * library under the hood. */
