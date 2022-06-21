@@ -31,10 +31,6 @@ export const registerRoute = (
     } = controller;
 
     const handlerResolver = async (context: ExtendedContext, next: Next) => {
-      const continueToPost = () => {
-        if (post.length > 0) next();
-      };
-
       const requestValidation = await schema.request.safeParseAsync(
         context.request.body ?? null
       );
@@ -42,37 +38,33 @@ export const registerRoute = (
       if (!requestValidation.success) {
         context.body = requestValidation.error;
         context.status = 400;
-        await continueToPost();
+        await next();
         return;
       } else
         context.request.body = <typeof context.request.body>(
           requestValidation.data
         );
 
-      const {
-        status = 200,
-        headers = {},
-        body: responseBody,
-      } = await handler(context);
+      const response = await handler(context);
 
       const responseValidation = await schema.response.safeParseAsync(
-        responseBody ?? null
+        "body" in response ? response.body : null
       );
 
       if (!responseValidation.success) {
         console.warn(Errors.RESPONSE_MISMATCH);
         context.status = 500;
-        await continueToPost();
+        await next();
         return;
       }
 
       context.body = responseValidation.data;
-      context.status = status;
+      context.status = response.status ?? 200;
 
-      for (const [key, value] of Object.entries(headers))
+      for (const [key, value] of Object.entries(response.headers || {}))
         context.set(key, value.toString());
 
-      continueToPost();
+      return next();
     };
 
     const methodRegistrar = router[

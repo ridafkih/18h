@@ -29,14 +29,17 @@ type MethodContext<
   URLParams extends Record<string, string> = Record<string, never>
 > = ExtendedContext<RequestSchema, URLParams>;
 
-type MethodHandlerFunctionResponse<ResponseSchema> = {
-  headers?: Record<string, string>;
-  status?: number;
-} & (ResponseSchema extends NonNullableValidStructure
-  ? {
-      body: ZodInfer<ResponseSchema>;
-    }
-  : Record<string, never>);
+type MethodHandlerFunctionResponse<ResponseSchema> =
+  ResponseSchema extends NonNullableValidStructure
+    ? {
+        headers?: Record<string, string>;
+        status?: number;
+        body: ZodInfer<ResponseSchema>;
+      }
+    : {
+        headers?: Record<string, string>;
+        status?: number;
+      };
 
 export type MethodHandlerFunction<
   RequestSchema extends ValidStructure,
