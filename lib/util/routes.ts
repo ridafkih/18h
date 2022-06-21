@@ -44,7 +44,10 @@ export const registerRoute = (
         context.body = requestValidation.error;
         await continueToPost();
         return;
-      }
+      } else
+        context.request.body = <typeof context.request.body>(
+          requestValidation.data
+        );
 
       const {
         status = 200,
@@ -64,7 +67,7 @@ export const registerRoute = (
       }
 
       context.status = status;
-      context.body = responseBody;
+      context.body = responseValidation.data;
 
       for (const [key, value] of Object.entries(headers))
         context.set(key, value.toString());
