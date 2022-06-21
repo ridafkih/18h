@@ -1,12 +1,15 @@
 import type { MethodHandlerFunction } from "@/@types/method";
-import type { SomeZodObject, ZodNull } from "zod";
 import type { Middleware } from "koa";
+import type {
+  NonNullableValidStructure,
+  ValidStructure,
+} from "@/@types/valid-structure";
 
 type MiddlewareStack = Array<Middleware>;
 
 export type CreateMethodOptions<
-  RequestSchema extends SomeZodObject | ZodNull,
-  ResponseSchema extends SomeZodObject | ZodNull,
+  RequestSchema extends ValidStructure,
+  ResponseSchema extends ValidStructure,
   URLParams extends Record<string, string>
 > = {
   schema: {
@@ -18,7 +21,7 @@ export type CreateMethodOptions<
     post?: MiddlewareStack;
   };
   handler: MethodHandlerFunction<RequestSchema, ResponseSchema, URLParams>;
-} & (RequestSchema extends SomeZodObject
+} & (RequestSchema extends NonNullableValidStructure
   ? {
       accepts: ("json" | "form")[];
     }
@@ -32,8 +35,8 @@ export type CreateMethodOptions<
  * @returns The method object.
  */
 export const method = <
-  ResponseSchema extends SomeZodObject | ZodNull,
-  RequestSchema extends SomeZodObject | ZodNull,
+  ResponseSchema extends ValidStructure,
+  RequestSchema extends ValidStructure,
   URLParams extends Record<string, string>
 >(
   options: CreateMethodOptions<RequestSchema, ResponseSchema, URLParams>

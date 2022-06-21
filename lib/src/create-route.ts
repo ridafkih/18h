@@ -1,6 +1,6 @@
 import type { CreateMethodOptions } from "@/src/create-method";
 import type { MethodName } from "@/@types/http";
-import type { SomeZodObject, ZodNull } from "zod";
+import type { ValidStructure } from "@/@types/valid-structure";
 
 /**
  * Creates a route object that takes in key-value method pairs.
@@ -11,8 +11,8 @@ export const route = <
   URLParams extends Record<string, string> = Record<string, never>
 >(methods: {
   [K in MethodName]?: CreateMethodOptions<
-    SomeZodObject | ZodNull,
-    SomeZodObject | ZodNull,
+    ValidStructure,
+    ValidStructure,
     URLParams
   >;
 }) => methods;
