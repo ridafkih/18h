@@ -72,5 +72,14 @@ const pathArrayToRoute = (origin: string, pathArray: string[]) => {
  */
 export const mapDirectoryToRoutes = (origin: string) => {
   const directoryMap = mapDirectory(origin);
-  return directoryMap.map((pathArray) => pathArrayToRoute(origin, pathArray));
+
+  const paths = directoryMap
+    .map((pathArray) => pathArrayToRoute(origin, pathArray))
+    .sort((current, comparison) => {
+      if (current.path === comparison.path) return 0;
+      if (current.path > comparison.path) return -1;
+      else return 1;
+    });
+
+  return paths;
 };
