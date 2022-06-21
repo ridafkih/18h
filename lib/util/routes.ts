@@ -3,6 +3,7 @@ import { getParsingMiddleware } from "@/util/middleware";
 import type { route } from "@/src/create-route";
 import type { ExtendedContext } from "@/@types/method";
 import type { Next } from "koa";
+import { Errors } from "@/@types/errors";
 
 type MethodRegistrationFunction = (
   route: string,
@@ -57,6 +58,7 @@ export const registerRoute = (
 
       if (!responseValidation.success) {
         context.status = 500;
+        console.warn(Errors.RESPONSE_MISMATCH);
         await continueToPost();
         return;
       }
