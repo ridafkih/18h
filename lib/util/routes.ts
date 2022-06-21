@@ -40,8 +40,8 @@ export const registerRoute = (
       );
 
       if (!requestValidation.success) {
-        context.status = 400;
         context.body = requestValidation.error;
+        context.status = 400;
         await continueToPost();
         return;
       } else
@@ -60,14 +60,14 @@ export const registerRoute = (
       );
 
       if (!responseValidation.success) {
-        context.status = 500;
         console.warn(Errors.RESPONSE_MISMATCH);
+        context.status = 500;
         await continueToPost();
         return;
       }
 
-      context.status = status;
       context.body = responseValidation.data;
+      context.status = status;
 
       for (const [key, value] of Object.entries(headers))
         context.set(key, value.toString());
