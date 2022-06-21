@@ -3,12 +3,16 @@ import { Errors } from "@/@types/errors";
 import { getParsingMiddleware } from "@/util/middleware";
 import type { route } from "@/src/create-route";
 import type { ExtendedContext } from "@/@types/method";
-import type { Next } from "koa";
+import type { Middleware, Next } from "koa";
 
 type MethodRegistrationFunction = (
   route: string,
   ...middleware: ((context: ExtendedContext, next: Next) => Promise<void>)[]
 ) => void;
+
+const disallowNext = (middleware: Middleware) => {
+  return (context: ExtendedContext) => middleware(context, async () => void 0);
+};
 
 /**
  * Registers an endpoint to a a route.
@@ -30,12 +34,11 @@ export const registerRoute = (
       middleware: { pre = [], post = [] } = {},
     } = controller;
 
-    const checkIfResponded = (context: ExtendedContext, next: Next) => {
-      if (context.headerSent) return;
-      else return next();
-    };
-
     const handlerResolver = async (context: ExtendedContext, next: Next) => {
+      const nextIfMiddlewareExist = () => {
+        if (post.length) return next();
+      };
+
       const requestValidation = await schema.request.safeParseAsync(
         context.request.body ?? null
       );
@@ -43,7 +46,6 @@ export const registerRoute = (
       if (!requestValidation.success) {
         context.body = requestValidation.error;
         context.status = 400;
-        await next();
         return;
       } else
         context.request.body = <typeof context.request.body>(
@@ -53,13 +55,12 @@ export const registerRoute = (
       const response = await handler(context);
 
       const responseValidation = await schema.response.safeParseAsync(
-        "body" in response ? response.body : null
+        "body" in response ? response.body : ""
       );
 
       if (!responseValidation.success) {
         console.warn(Errors.RESPONSE_MISMATCH);
         context.status = 500;
-        await next();
         return;
       }
 
@@ -69,7 +70,7 @@ export const registerRoute = (
       for (const [key, value] of Object.entries(response.headers || {}))
         context.set(key, value.toString());
 
-      return next();
+      return nextIfMiddlewareExist();
     };
 
     const methodRegistrar = router[
@@ -77,11 +78,13 @@ export const registerRoute = (
     ] as MethodRegistrationFunction;
 
     const chain = [
-      checkIfResponded,
       ...getParsingMiddleware(accepts),
       ...pre,
       handlerResolver,
-      ...post,
+      ...post.map((middleware, index) => {
+        if (post.length - 1 !== index) return middleware;
+        return disallowNext(middleware);
+      }),
     ] as Parameters<typeof methodRegistrar>[1][];
 
     if (typeof methodRegistrar !== "function")
