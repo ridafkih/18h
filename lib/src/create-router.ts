@@ -20,7 +20,7 @@ export const router = async ({
   const app = new Koa();
   const router = new Router();
 
-  middleware.forEach((fn) => app.use(fn));
+  middleware.forEach((middlewareFunc) => app.use(middlewareFunc));
   app.use(router.routes());
 
   for (const { routes, path } of mapDirectoryToRoutes(routesFolder)) {
