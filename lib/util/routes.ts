@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import { Errors } from "@/@types/errors";
+import { log } from "@/util/log";
 import { getParsingMiddleware } from "@/util/middleware";
 import type { route } from "@/src/create-route";
 import type { ExtendedContext } from "@/@types/method";
@@ -90,6 +91,7 @@ export const registerRoute = (
     if (typeof methodRegistrar !== "function")
       throw Error("UNSUPPORTED_METHOD_NAME");
 
+    log(`registered route: ${method} ${path}`);
     (router[method as keyof typeof router] as MethodRegistrationFunction)(
       path,
       ...chain

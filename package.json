@@ -1,7 +1,7 @@
 {
   "name": "18h",
   "description": "A Next.js style dynamic API router for Koa-based APIs.",
-  "version": "3.0.13",
+  "version": "3.0.14",
   "repository": {
     "url": "https://github.com/ridafkih/18h"
   },
@@ -18,6 +18,7 @@
   "author": "Rida F'kih",
   "license": "ISC",
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/koa-bodyparser": "^4.3.7",
     "@types/node": "^17.0.31",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
@@ -33,6 +34,7 @@
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",
+    "debug": "^4.3.4",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",

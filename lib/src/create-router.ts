@@ -3,6 +3,7 @@ import Router from "koa-router";
 import { mapDirectoryToRoutes } from "@/util/filesystem";
 import { registerRoute } from "@/util/routes";
 import type { Middleware } from "koa";
+import { log } from "@/util/log";
 
 interface CreateRouterOptions {
   routesFolder: string;
@@ -16,9 +17,12 @@ export const router = async ({
   middleware = [],
   port,
   hostname,
-}: CreateRouterOptions) => {
+}: CreateRouterOptions): Promise<{ app: Koa; router: Router }> => {
   const app = new Koa();
   const router = new Router();
+
+  /** A debug logger middleware to log every request to console */
+  app.use((ctx) => log(`${ctx.method.toLowerCase()} ${ctx.path}`));
 
   middleware.forEach((middlewareFunc) => app.use(middlewareFunc));
   app.use(router.routes());
@@ -30,6 +34,7 @@ export const router = async ({
 
   return new Promise((resolve) => {
     app.listen(port, hostname, () => {
+      log(`listening on ${hostname}:${port}`);
       resolve({ app, router });
     });
   });
