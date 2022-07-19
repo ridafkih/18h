@@ -4,6 +4,7 @@ import { getParsingMiddleware } from "@/util/middleware";
 import type { route } from "@/src/create-route";
 import type { ExtendedContext } from "@/@types/method";
 import type { Middleware, Next } from "koa";
+import { log } from "./log";
 
 type MethodRegistrationFunction = (
   route: string,
@@ -90,6 +91,7 @@ export const registerRoute = (
     if (typeof methodRegistrar !== "function")
       throw Error("UNSUPPORTED_METHOD_NAME");
 
+    log(`registered route: ${method} ${path}`);
     (router[method as keyof typeof router] as MethodRegistrationFunction)(
       path,
       ...chain
