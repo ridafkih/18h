@@ -1,10 +1,10 @@
 import Router from "koa-router";
 import { Errors } from "@/@types/errors";
+import { log } from "@/util/log";
 import { getParsingMiddleware } from "@/util/middleware";
 import type { route } from "@/src/create-route";
 import type { ExtendedContext } from "@/@types/method";
 import type { Middleware, Next } from "koa";
-import { log } from "./log";
 
 type MethodRegistrationFunction = (
   route: string,
