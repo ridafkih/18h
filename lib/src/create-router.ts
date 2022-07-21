@@ -21,8 +21,11 @@ export const router = async ({
   const app = new Koa();
   const router = new Router();
 
-  /** A debug logger middleware to log every request to console */
-  app.use((ctx) => log(`${ctx.method.toLowerCase()} ${ctx.path}`));
+  app.use((ctx, next) => {
+    /** A debug logger middleware to log every request to console */
+    log(`${ctx.method.toLowerCase()} ${ctx.path}`);
+    return next();
+  });
 
   middleware.forEach((middlewareFunc) => app.use(middlewareFunc));
   app.use(router.routes());
