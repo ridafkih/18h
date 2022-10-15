@@ -2,7 +2,6 @@ import type { Context } from "koa";
 import type { ZodNull, infer as ZodInfer } from "zod";
 import type {
   NonNullableValidStructure,
-  ValidStructure,
 } from "@/@types/valid-structure";
 
 interface OverrideBody<T extends Record<string, unknown> | undefined> extends Exclude<Context["request"], "body"> {
@@ -14,7 +13,7 @@ interface OverrideRequest<T extends Record<string, unknown> | undefined> extends
 }
 
 export type ExtendedContext<
-  RequestBody extends ValidStructure = ZodNull,
+  RequestBody = ZodNull,
   URLParams extends Record<string, string> = Record<string, never>
 > = OverrideRequest<
   RequestBody extends NonNullableValidStructure
@@ -25,7 +24,7 @@ export type ExtendedContext<
 };
 
 type MethodContext<
-  RequestSchema extends ValidStructure,
+  RequestSchema,
   URLParams extends Record<string, string> = Record<string, never>
 > = ExtendedContext<RequestSchema, URLParams>;
 
@@ -42,8 +41,8 @@ type MethodHandlerFunctionResponse<ResponseSchema> =
       };
 
 export type MethodHandlerFunction<
-  RequestSchema extends ValidStructure,
-  ResponseSchema extends ValidStructure,
+  RequestSchema,
+  ResponseSchema,
   URLParams extends Record<string, string>
 > = (
   context: MethodContext<RequestSchema, URLParams>

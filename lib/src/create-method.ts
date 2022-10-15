@@ -8,8 +8,8 @@ import type {
 type MiddlewareStack = Array<Middleware>;
 
 export type CreateMethodOptions<
-  RequestSchema extends ValidStructure,
-  ResponseSchema extends ValidStructure,
+  RequestSchema,
+  ResponseSchema,
   URLParams extends Record<string, string>
 > = {
   schema: {
@@ -35,8 +35,8 @@ export type CreateMethodOptions<
  * @returns The method object.
  */
 export const method = <
-  ResponseSchema extends ValidStructure,
-  RequestSchema extends ValidStructure,
+  ResponseSchema,
+  RequestSchema,
   URLParams extends Record<string, string>
 >(
   options: CreateMethodOptions<RequestSchema, ResponseSchema, URLParams>

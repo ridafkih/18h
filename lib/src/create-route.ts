@@ -8,11 +8,13 @@ import type { ValidStructure } from "@/@types/valid-structure";
  * @returns An object containing the methods.
  */
 export const route = <
-  URLParams extends Record<string, string> = Record<string, never>
+  URLParams extends Record<string, string> = Record<string, never>,
+  RequestBody extends ValidStructure = ValidStructure,
+  ResponseBody extends ValidStructure = ValidStructure
 >(methods: {
   [K in MethodName]?: CreateMethodOptions<
-    ValidStructure,
-    ValidStructure,
+    RequestBody,
+    ResponseBody,
     URLParams
   >;
 }) => methods;
