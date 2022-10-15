@@ -5,11 +5,11 @@ import type {
   ValidStructure,
 } from "@/@types/valid-structure";
 
-interface OverrideBody<T> extends Exclude<Context["request"], "body"> {
+interface OverrideBody<T extends Record<string, unknown> | undefined> extends Exclude<Context["request"], "body"> {
   body: T;
 }
 
-interface OverrideRequest<T> extends Exclude<Context, "body"> {
+interface OverrideRequest<T extends Record<string, unknown> | undefined> extends Exclude<Context, "body"> {
   request: OverrideBody<T>;
 }
 
