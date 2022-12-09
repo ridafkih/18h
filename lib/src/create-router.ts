@@ -12,12 +12,11 @@ interface CreateRouterOptions {
   middleware?: Middleware[];
 }
 
-export const router = async ({
-  routesFolder,
-  middleware = [],
-  port,
-  hostname,
-}: CreateRouterOptions): Promise<{ app: Koa; router: Router }> => {
+type CreateRouterOptionsFunction = (app: Koa) => CreateRouterOptions;
+
+export const router = async (
+  options: CreateRouterOptions | CreateRouterOptionsFunction
+): Promise<{ app: Koa; router: Router }> => {
   const app = new Koa();
   const router = new Router();
 
@@ -26,6 +25,13 @@ export const router = async ({
     log(`${ctx.method.toLowerCase()} ${ctx.path}`);
     return next();
   });
+
+  const {
+    routesFolder,
+    port,
+    hostname,
+    middleware = [],
+  } = typeof options === "function" ? options(app) : options;
 
   middleware.forEach((middlewareFunc) => app.use(middlewareFunc));
   app.use(router.routes());
