@@ -18,8 +18,9 @@ const mapDirectory = (origin: string, ...paths: string[]): DirectoryMap => {
     const pathAsArray = [...paths, source.name];
 
     if (!source.isDirectory()) accumulator.push(pathAsArray);
-    else accumulator.push(...mapDirectory(origin, ...pathAsArray));
+    if (source.name.endsWith(".d.ts")) return accumulator;
 
+    accumulator.push(...mapDirectory(origin, ...pathAsArray));
     return accumulator;
   }, [] as DirectoryMap);
 };
